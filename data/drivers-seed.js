@@ -1,0 +1,480 @@
+/* Boshlang'ich ma'lumotlar (data/drivers.json bilan bir xil).
+   index.html ni to'g'ridan-to'g'ri (file://) ochganda brauzer fetch('data/drivers.json')
+   so'rovini bloklaydi, shuning uchun mock-api.js zaxira sifatida shu nusxadan foydalanadi. */
+window.DRIVERS_SEED = {
+  "version": 1,
+  "drivers": [
+    {
+      "id": "driver-rustam",
+      "name": "Rustam Qodirov",
+      "phone": "+998 90 123 45 67",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face",
+      "tractorModel": "MTZ-82.1 Belarus",
+      "plate": "01 777 TAA",
+      "licenseSeries": "AG-2026-4412",
+      "completedJobs": 142,
+      "prices": {
+        "plow": 25000,
+        "chisel": 30000,
+        "disk": 20000,
+        "harrow": 12000,
+        "cultivate": 15000,
+        "level": 14000,
+        "furrow": 10000,
+        "interrow": 12000,
+        "fertilize": 8000,
+        "irrigation_ditch": 13000,
+        "melioration": 35000,
+        "mulch": 9000
+      },
+      "amenities": [
+        "Chuqur haydash (35sm+)",
+        "Yangi 3-korpusli plug",
+        "15 daqiqada boraman",
+        "Diskalash ham bor"
+      ],
+      "districts": [
+        "parkent",
+        "chirchiq"
+      ],
+      "distanceKm": 1.8,
+      "latOffset": 0.012,
+      "lngOffset": -0.015,
+      "recommended": true,
+      "isOnline": false,
+      "ratingDist": {
+        "5": 21,
+        "4": 3,
+        "3": 1,
+        "2": 0,
+        "1": 0
+      },
+      "dailyIncome": 712500,
+      "walletBalance": 1425000,
+      "totalSotixWorked": 65,
+      "jobsToday": 4,
+      "history": [
+        {
+          "title": "Yer haydash (20 sotix)",
+          "place": "Parkent tumani",
+          "time": "Bugun 15:10",
+          "amount": 475000
+        },
+        {
+          "title": "Tomorqa haydash (10 sotix)",
+          "place": "Yuqori Chirchiq",
+          "time": "Bugun 12:40",
+          "amount": 237500
+        },
+        {
+          "title": "Diskalash (15 sotix)",
+          "place": "Zangiota",
+          "time": "Kecha 17:20",
+          "amount": 285000
+        },
+        {
+          "title": "Boronalash (30 sotix)",
+          "place": "Yangiyo'l tumani",
+          "time": "Kecha 13:05",
+          "amount": 342000
+        },
+        {
+          "title": "Yerga o‘g‘it solish (12 sotix)",
+          "place": "Parkent tumani",
+          "time": "Kecha 09:30",
+          "amount": 91200
+        }
+      ]
+    },
+    {
+      "id": "driver-sanjar",
+      "name": "Sanjarbek Aliyev",
+      "phone": "+998 90 888 11 22",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop&crop=face",
+      "tractorModel": "Belarus-1221 (Og'ir)",
+      "plate": "10 445 BBA",
+      "licenseSeries": "AG-2026-3187",
+      "completedJobs": 98,
+      "prices": {
+        "plow": 30000,
+        "chisel": 38000,
+        "disk": 26000,
+        "harrow": 15000,
+        "cultivate": 18000,
+        "level": 16000,
+        "furrow": 12000,
+        "interrow": 14000,
+        "fertilize": 9000,
+        "irrigation_ditch": 15000,
+        "melioration": 42000
+      },
+      "amenities": [
+        "Katta va baquvvat traktor (130 ot kuchi)",
+        "Shudgordan so'ng tekislab berish",
+        "Diskalash xizmati bor"
+      ],
+      "districts": [
+        "parkent",
+        "chirchiq",
+        "buka"
+      ],
+      "distanceKm": 3.5,
+      "latOffset": -0.018,
+      "lngOffset": 0.022,
+      "recommended": false,
+      "isOnline": true,
+      "ratingDist": {
+        "5": 17,
+        "4": 5,
+        "3": 1,
+        "2": 0,
+        "1": 0
+      },
+      "dailyIncome": 1330000,
+      "walletBalance": 2150000,
+      "totalSotixWorked": 40,
+      "jobsToday": 2,
+      "history": [
+        {
+          "title": "Chizellash (25 sotix)",
+          "place": "Parkent tumani",
+          "time": "Bugun 14:20",
+          "amount": 902500
+        },
+        {
+          "title": "Yer haydash (15 sotix)",
+          "place": "Yuqori Chirchiq",
+          "time": "Bugun 10:05",
+          "amount": 427500
+        },
+        {
+          "title": "Tekislash (20 sotix)",
+          "place": "Bo'ka tumani",
+          "time": "Kecha 16:45",
+          "amount": 304000
+        },
+        {
+          "title": "Diskalash (40 sotix)",
+          "place": "Zangiota",
+          "time": "Kecha 11:10",
+          "amount": 988000
+        }
+      ]
+    },
+    {
+      "id": "driver-jamshid",
+      "name": "Jamshidbek Nurmatov",
+      "phone": "+998 93 450 67 89",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&crop=face",
+      "tractorModel": "TTZ-80 Universal",
+      "plate": "01 520 TAA",
+      "licenseSeries": "AG-2025-9054",
+      "completedJobs": 76,
+      "prices": {
+        "plow": 20000,
+        "chisel": 25000,
+        "disk": 16000,
+        "harrow": 10000,
+        "cultivate": 12000,
+        "level": 11000,
+        "furrow": 8000,
+        "interrow": 9000,
+        "fertilize": 6000,
+        "irrigation_ditch": 10000,
+        "mulch": 7000
+      },
+      "amenities": [
+        "Hamyonbop narx",
+        "Kichik tomorqalar uchun juda qulay",
+        "Tejamkor va chaqqon"
+      ],
+      "districts": [
+        "zangiota",
+        "yangiyol"
+      ],
+      "distanceKm": 5.2,
+      "latOffset": 0.025,
+      "lngOffset": 0.018,
+      "recommended": false,
+      "isOnline": true,
+      "ratingDist": {
+        "5": 13,
+        "4": 6,
+        "3": 1,
+        "2": 0,
+        "1": 0
+      },
+      "dailyIncome": 288800,
+      "walletBalance": 980000,
+      "totalSotixWorked": 20,
+      "jobsToday": 2,
+      "history": [
+        {
+          "title": "Yer haydash (8 sotix)",
+          "place": "Yangiyo'l tumani",
+          "time": "Bugun 13:30",
+          "amount": 152000
+        },
+        {
+          "title": "Kultivatsiya (12 sotix)",
+          "place": "Zangiota",
+          "time": "Bugun 09:50",
+          "amount": 136800
+        },
+        {
+          "title": "Mulchalash (10 sotix)",
+          "place": "Parkent tumani",
+          "time": "Kecha 15:00",
+          "amount": 66500
+        }
+      ]
+    },
+    {
+      "id": "driver-nodir",
+      "name": "Nodirbek To'rayev",
+      "phone": "+998 97 712 34 56",
+      "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&h=120&fit=crop&crop=face",
+      "tractorModel": "New Holland TD5.110",
+      "plate": "01 888 TAA",
+      "licenseSeries": "AG-2026-5620",
+      "completedJobs": 110,
+      "prices": {
+        "plow": 32000,
+        "chisel": 40000,
+        "disk": 28000,
+        "harrow": 17000,
+        "cultivate": 20000,
+        "level": 22000,
+        "furrow": 14000,
+        "interrow": 15000,
+        "fertilize": 10000,
+        "irrigation_ditch": 17000,
+        "melioration": 45000,
+        "mulch": 12000
+      },
+      "amenities": [
+        "Yevropa sifatli yumshatish",
+        "Lazerli tekislagich agregati",
+        "Katta yerlarga 10% chegirma"
+      ],
+      "districts": [
+        "parkent",
+        "buka",
+        "yangiyol"
+      ],
+      "distanceKm": 7.4,
+      "latOffset": -0.035,
+      "lngOffset": -0.028,
+      "recommended": false,
+      "isOnline": true,
+      "ratingDist": {
+        "5": 19,
+        "4": 4,
+        "3": 1,
+        "2": 0,
+        "1": 0
+      },
+      "dailyIncome": 1278700,
+      "walletBalance": 3200000,
+      "totalSotixWorked": 53,
+      "jobsToday": 2,
+      "history": [
+        {
+          "title": "Tekislash (35 sotix)",
+          "place": "Yuqori Chirchiq",
+          "time": "Bugun 15:40",
+          "amount": 731500
+        },
+        {
+          "title": "Yer haydash (18 sotix)",
+          "place": "Bo'ka tumani",
+          "time": "Bugun 11:15",
+          "amount": 547200
+        },
+        {
+          "title": "Yerga o‘g‘it solish (50 sotix)",
+          "place": "Parkent tumani",
+          "time": "Kecha 12:30",
+          "amount": 475000
+        }
+      ]
+    },
+    {
+      "id": "driver-bobur",
+      "name": "Bobur Ergashev",
+      "phone": "+998 91 555 21 43",
+      "avatar": "",
+      "tractorModel": "Belarus-892.2",
+      "plate": "01 314 TAB",
+      "licenseSeries": "AG-2026-6103",
+      "completedJobs": 54,
+      "prices": {
+        "plow": 24000,
+        "disk": 19000,
+        "harrow": 11500,
+        "cultivate": 14000,
+        "level": 13500,
+        "furrow": 9500,
+        "interrow": 11000,
+        "fertilize": 7500,
+        "mulch": 8500
+      },
+      "amenities": [
+        "Qator oralariga ishlov berishda tajribali",
+        "Ertalab soat 6:00 dan ishlaydi"
+      ],
+      "districts": [
+        "chirchiq",
+        "zangiota"
+      ],
+      "distanceKm": 2.9,
+      "latOffset": 0.02,
+      "lngOffset": -0.021,
+      "recommended": false,
+      "isOnline": true,
+      "ratingDist": {
+        "5": 11,
+        "4": 4,
+        "3": 1,
+        "2": 0,
+        "1": 0
+      },
+      "dailyIncome": 361000,
+      "walletBalance": 740000,
+      "totalSotixWorked": 30,
+      "jobsToday": 2,
+      "history": [
+        {
+          "title": "Qator oralariga ishlov berish (18 sotix)",
+          "place": "Zangiota",
+          "time": "Bugun 11:00",
+          "amount": 188100
+        },
+        {
+          "title": "Yer haydash (12 sotix)",
+          "place": "Yuqori Chirchiq",
+          "time": "Kecha 14:10",
+          "amount": 273600
+        }
+      ]
+    },
+    {
+      "id": "driver-otabek",
+      "name": "Otabek Yusupov",
+      "phone": "+998 99 321 76 54",
+      "avatar": "",
+      "tractorModel": "YTO-X904",
+      "plate": "30 218 CAA",
+      "licenseSeries": "AG-2025-7741",
+      "completedJobs": 41,
+      "prices": {
+        "plow": 22000,
+        "chisel": 27000,
+        "disk": 18000,
+        "harrow": 11000,
+        "cultivate": 13000,
+        "level": 12500,
+        "furrow": 9000,
+        "interrow": 10500,
+        "irrigation_ditch": 11500,
+        "mulch": 8000
+      },
+      "amenities": [
+        "Sug'orish ariqlari ochishda 8 yillik tajriba",
+        "Qumloq va shag'alli yerlar uchun mos"
+      ],
+      "districts": [
+        "yangiyol",
+        "zangiota"
+      ],
+      "distanceKm": 4.4,
+      "latOffset": -0.022,
+      "lngOffset": -0.037,
+      "recommended": false,
+      "isOnline": false,
+      "ratingDist": {
+        "5": 8,
+        "4": 5,
+        "3": 2,
+        "2": 1,
+        "1": 0
+      },
+      "dailyIncome": 190000,
+      "walletBalance": 510000,
+      "totalSotixWorked": 22,
+      "jobsToday": 1,
+      "history": [
+        {
+          "title": "Sug‘orish uchun ariqlar ochish (22 sotix)",
+          "place": "Yangiyo'l tumani",
+          "time": "Bugun 10:30",
+          "amount": 240350
+        },
+        {
+          "title": "Chizellash (10 sotix)",
+          "place": "Zangiota",
+          "time": "Kecha 16:00",
+          "amount": 256500
+        }
+      ]
+    },
+    {
+      "id": "driver-dilshod",
+      "name": "Dilshod Karimov",
+      "phone": "+998 88 904 12 30",
+      "avatar": "",
+      "tractorModel": "Kubota M7040",
+      "plate": "10 902 DBA",
+      "licenseSeries": "AG-2026-8825",
+      "completedJobs": 63,
+      "prices": {
+        "plow": 34000,
+        "chisel": 41000,
+        "disk": 29000,
+        "level": 21000,
+        "irrigation_ditch": 16500,
+        "melioration": 47000,
+        "fertilize": 10500,
+        "mulch": 12500
+      },
+      "amenities": [
+        "Meliorativ ishlov va sho'r yerni yaxshilash",
+        "Yoqilg'i tejamkor yapon traktori"
+      ],
+      "districts": [
+        "buka",
+        "parkent"
+      ],
+      "distanceKm": 6.1,
+      "latOffset": 0.045,
+      "lngOffset": 0.031,
+      "recommended": false,
+      "isOnline": true,
+      "ratingDist": {
+        "5": 14,
+        "4": 3,
+        "3": 0,
+        "2": 0,
+        "1": 0
+      },
+      "dailyIncome": 860000,
+      "walletBalance": 1890000,
+      "totalSotixWorked": 28,
+      "jobsToday": 2,
+      "history": [
+        {
+          "title": "Meliorativ ishlov (20 sotix)",
+          "place": "Bo'ka tumani",
+          "time": "Bugun 12:20",
+          "amount": 893000
+        },
+        {
+          "title": "Yer haydash (10 sotix)",
+          "place": "Parkent tumani",
+          "time": "Kecha 09:45",
+          "amount": 323000
+        }
+      ]
+    }
+  ]
+};

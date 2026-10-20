@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Traktor — Qishloq Xo'jaligi va Yer Haydash Xizmati</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS for Map (Google Maps & OpenStreetMap Engine) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+    
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="desktop-mode">
+
+    <!-- Top App Navigation & Mode Switcher -->
+    <header class="app-navbar">
+        <div class="nav-content">
+            <!-- Brand Logo -->
+            <div class="brand">
+                <div class="brand-badge">🚜</div>
+                <div class="brand-info">
+                    <h1>Traktor</h1>
+                    <span class="subtext">O'zbekistonda Yer Haydash Xizmati</span>
+                </div>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="role-nav-tabs">
+                <button class="nav-tab-btn active" data-role="user" id="tab-user">
+                    <span class="icon">👤</span>
+                    <span class="label">User (Mijoz)</span>
+                </button>
+                <button class="nav-tab-btn" data-role="driver" id="tab-driver">
+                    <span class="icon">🚜</span>
+                    <span class="label">Traktorchi (Ishchi)</span>
+                    <span class="dot-status" id="nav-driver-dot"></span>
+                </button>
+                <button class="nav-tab-btn" data-role="admin" id="tab-admin">
+                    <span class="icon">🏢</span>
+                    <span class="label">Admin (Texnopark)</span>
+                </button>
+                <button class="nav-tab-btn split-tab" data-role="split" id="tab-split" title="Ikkala rolni yonma-yon sinash">
+                    <span class="icon">⚡</span>
+                    <span class="label">Split Sinov</span>
+                </button>
+            </div>
+
+            <!-- Device Frame Switcher (Mobile Mockup vs Full Screen) -->
+            <div class="device-toggle">
+                <button class="device-btn" id="btn-toggle-device" title="Mobil yoki Keng ekran rejimini almashtirish">
+                    <span id="device-btn-icon">📱</span>
+                    <span id="device-btn-text">Mobil Rejim</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Viewport Wrapper (Can be styled as Mobile Device or Full Width) -->
+    <div class="viewport-wrapper" id="viewport-wrapper">
+        <div class="device-frame" id="device-frame">
+
+            <!-- Mobile Status Bar (Visible in Mobile View) -->
+            <div class="mobile-statusbar">
+                <span class="time" id="status-time">09:41</span>
+                <div class="notch-speaker"></div>
+                <div class="status-icons">
+                    <span>5G</span>
+                    <span>100%</span>
+                </div>
+            </div>
+
+            <!-- Main Content Container -->
+            <main class="app-main-content">
+
+                <!-- ==============================================
+                     1. USER (MIJOZ / DEHQON / YER EGASI) SCREEN
+                     ============================================== -->
+                <section class="screen-view view-user active" id="screen-user">
+
+                    <!-- Yakunlangan xizmatni baholash (ish tugagach paydo bo'ladi) -->
+                    <div class="rating-card" id="user-rating-card" style="display: none;"></div>
+                    
+                    <!-- 1-QADAM: Xizmat Turini Tanlash (12 ta agrotexnika xizmati) -->
+                    <div class="service-selector-card">
+                        <div class="service-selector-header">
+                            <span class="badge-mini">1-QADAM</span>
+                            <h2>Xizmat Turini Tanlang</h2>
+                            <p class="desc">Kerakli qishloq xo'jaligi xizmatini belgilang — bu traktorchiga buyurtmada ko'rinadi</p>
+                        </div>
+                        <div class="agri-services-grid" id="agri-services-grid">
+                            <!-- Populated dynamically via script.js -->
+                        </div>
+                    </div>
+
+                    <!-- 2-QADAM: Top Land Setup Header -->
+                    <div class="land-setup-card">
+                        <div class="land-input-header">
+                            <div>
+                                <span class="badge-mini">2-QADAM</span>
+                                <h2>Yer Maydoningizni Kiriting</h2>
+                                <p class="desc">Traktorchi sizning maydoningizga qarab narx va oraliq masofani baholaydi</p>
+                            </div>
+                        </div>
+
+                        <!-- Land Size Input & Slider -->
+                        <div class="land-controls">
+                            <div class="size-display-row">
+                                <div class="size-counter-box">
+                                    <button class="btn-step" id="btn-size-minus">-</button>
+                                    <div class="size-value-wrap">
+                                        <input type="number" id="input-land-size" value="15" min="1" max="500" step="1">
+                                        <span class="unit-text" id="unit-display-text">Sotix</span>
+                                    </div>
+                                    <button class="btn-step" id="btn-size-plus">+</button>
+                                </div>
+                                <div class="unit-toggle-group">
+                                    <button class="unit-btn active" data-unit="sotix" id="unit-sotix">Sotix</button>
+                                    <button class="unit-btn" data-unit="gektar" id="unit-gektar">Gektar</button>
+                                </div>
+                            </div>
+
+                            <!-- Quick Preset Badges -->
+                            <div class="preset-badges">
+                                <button class="badge-chip" data-val="6">6 sotix (Hovli/Tomorqa)</button>
+                                <button class="badge-chip active" data-val="15">15 sotix (O'rtacha yer)</button>
+                                <button class="badge-chip" data-val="50">50 sotix (Yarim gektar)</button>
+                                <button class="badge-chip" data-val="100">1 Gektar (Katta maydon)</button>
+                            </div>
+
+                            <!-- Region / Address Dropdown -->
+                            <div class="location-select-wrap">
+                                <span class="loc-icon">📍</span>
+                                <select id="select-user-region">
+                                    <option value="parkent" selected>Toshkent vil. Parkent tumani (Soyliq dalalari)</option>
+                                    <option value="chirchiq">Toshkent vil. Yuqori Chirchiq (Bardanko'l)</option>
+                                    <option value="zangiota">Toshkent vil. Zangiota (Nazarbek tomorqalari)</option>
+                                    <option value="yangiyol">Toshkent vil. Yangiyo'l tumani</option>
+                                    <option value="buka">Toshkent vil. Bo'ka tumani</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Active Order Tracking (Hidden until order is made) -->
+                    <div class="active-order-tracking-card" id="user-tracking-card" style="display: none;">
+                        <div class="tracking-top-bar">
+                            <div class="live-dot-pulse"></div>
+                            <h3 id="user-tracking-status-title">Traktorchiga buyurtma yuborildi...</h3>
+                            <button class="btn-text-cancel" id="btn-user-cancel-order">Bekor qilish</button>
+                        </div>
+
+                        <!-- Selected Driver Info -->
+                        <div class="chosen-driver-card" id="chosen-driver-info">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face" alt="Traktorchi rasmi" class="driver-avatar-img" id="track-driver-photo">
+                            <div class="driver-meta">
+                                <div class="name-row">
+                                    <strong id="track-driver-name">Rustam Qodirov</strong>
+                                    <span class="rating-badge" id="track-driver-rating">⭐ 4.90</span>
+                                </div>
+                                <p class="tractor-info" id="track-tractor-title">🚜 MTZ-82.1 Belarus • <span class="plate">01 777 TAA</span></p>
+                                <p class="track-fare-info">Xizmat: <strong class="text-primary" id="track-fare-service">Yer haydash</strong> | Maydon: <strong id="track-fare-size">15 sotix</strong> | Summa: <strong class="text-green" id="track-fare-amount">375 000 so'm</strong></p>
+                            </div>
+                            <a href="tel:+998901234567" class="btn-call-circle" id="track-call-btn" title="Qo'ng'iroq qilish">📞</a>
+                        </div>
+
+                        <!-- Live ETA Banner -->
+                        <div class="eta-live-pill">
+                            <span class="eta-icon">⏱️</span>
+                            <div class="eta-info">
+                                <span class="label">Taxminiy yetib kelish vaqti:</span>
+                                <strong class="time" id="user-eta-display">~8 daqiqa (2.4 km)</strong>
+                            </div>
+                            <span class="pulse-ring"></span>
+                        </div>
+
+                        <!-- Progress Steps -->
+                        <div class="trip-progress-bar">
+                            <div class="bar-step active" id="p-step-1">1. Yuborildi</div>
+                            <div class="bar-step" id="p-step-2">2. Yo'lda 🚜</div>
+                            <div class="bar-step" id="p-step-3">3. Dalada 📍</div>
+                            <div class="bar-step" id="p-step-4">4. Haydalmoqda 🌾</div>
+                            <div class="bar-step" id="p-step-5">5. Bajarildi ✅</div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Map Container -->
+                    <div class="map-section-card">
+                        <div class="map-header-row">
+                            <div class="map-title-wrap">
+                                <h3>🗺️ Google Xaritasi: Yaqin Atrofdagi Traktorchilar</h3>
+                                <p class="map-sub">Google Sun'iy yo'ldosh va xaritada dalangiz hamda traktorchilarning narxi</p>
+                            </div>
+<div style="position:relative;overflow:hidden;"><a href="https://yandex.uz/maps/org/muhammad_al_xorazmiy_nomidagi_toshkent_axborot_texnologiyalari_universiteti/181817256792/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:0px;">Muhammad al-Xorazmiy nomidagi Toshkent axborot texnologiyalari universiteti</a><a href="https://yandex.uz/maps/10335/tashkent/category/university/184106140/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:14px;">OO‘Yu  Toshkentda</a><iframe src="https://yandex.uz/map-widget/v1/?ll=69.395243%2C41.298991&mode=search&oid=181817256792&ol=biz&sctx=ZAAAAAgBEAAaKAoSCcueBDbnUVFAERGPxMvTp0RAEhIJATRKl%2F4l1j8RfGRz1TxHxD8iBgABAgMEBSgKOABA31BIAWI6cmVhcnI9c2NoZW1lX0xvY2FsL0dlb3VwcGVyL0FkdmVydHMvQ3VzdG9tTWF4YWR2L0VuYWJsZWQ9MWI6cmVhcnI9c2NoZW1lX0xvY2FsL0dlb3VwcGVyL0FkdmVydHMvQ3VzdG9tTWF4YWR2L01heGFkdj0xNWJEcmVhcnI9c2NoZW1lX0xvY2FsL0dlb3VwcGVyL0FkdmVydHMvQ3VzdG9tTWF4YWR2L1JlZ2lvbklkcz1bMSwxMDE3NF1iQHJlYXJyPXNjaGVtZV9Mb2NhbC9HZW91cHBlci9BZHZlcnRzL01heGFkdlRvcE1peC9NYXhhZHZGb3JNaXg9MTBqAnV6nQHNzMw9oAEAqAEAvQGEBSUawgFW2NacqaUFk6aVj4UC8qWTsscBkM%2F8i%2BoDzqKk2oAB9bLbrv0Gxp6W9CXd1uG06AWZm7DaFZf7lp813sWR250ErqOBnbYE0oKCwY8EzPSBrzDnjoyMiQKCAgR0YXR1igIAkgIAmgIMZGVza3RvcC1tYXBz&sll=69.395243%2C41.298991&sspn=0.672336%2C0.497281&text=tatu&z=10.35" width="560" height="400" frameborder="1" allowfullscreen="true" style="position:relative;"></iframe></div>
+                            <!-- Google Maps Layer Switcher -->
+                            <div class="map-layer-switcher" id="map-layer-switcher">
+                                <button class="layer-btn active" data-layer="google_hybrid" id="layer-google-sat">🛰️ Google Sun'iy yo'ldosh</button>
+                                <button class="layer-btn" data-layer="google_road" id="layer-google-road">🗺️ Google Xarita</button>
+                                <button class="layer-btn" data-layer="google_terrain" id="layer-google-terrain">⛰️ Relyef</button>
+                                <button class="layer-btn api-btn" id="btn-open-google-api" title="Google Maps API kalitini kiritish">🔑 Google API</button>
+                            </div>
+                            <div class="map-legend-items">
+                                <span class="legend-badge red">📍 Dalangiz</span>
+                                <span class="legend-badge green">🚜 Bo'sh traktorlar</span>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+                    <!-- Nearby Drivers List (The Core Feature: Price & Amenities Choice!) -->
+                    <div class="drivers-market-section" id="drivers-market-section">
+                        <div class="market-header">
+                            <div>
+                                <span class="badge-mini">3-QADAM</span>
+                                <h3>Yaqin Atrofdagi Barcha Traktorchilar</h3>
+                                <p class="subtitle" id="market-subtitle">Xizmat va maydonni tanlab, traktorchilarni qidiring:</p>
+                            </div>
+                            <div class="sort-selector" id="sort-selector-wrap" style="display: none;">
+                                <span>Saralash:</span>
+                                <select id="select-sort-drivers">
+                                    <option value="distance">Eng yaqinlari</option>
+                                    <option value="price_asc">Narxi: Arzondan qimmatga</option>
+                                    <option value="rating">Reytingi bo'yicha</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Qidiruv: boshlang'ich holat -->
+                        <div class="search-drivers-card" id="search-idle-panel">
+                            <div class="search-illustration">🔍</div>
+                            <div class="search-summary" id="search-summary"></div>
+                            <button class="btn-search-drivers" id="btn-search-drivers">
+                                <span>🔍</span>
+                                <span>Traktorchilarni qidirish</span>
+                            </button>
+                            <p class="search-hint">Tugmani bosganingizdan so'ng yaqin atrofdagi mavjud traktorchilar va ularning narxlari chiqadi</p>
+                        </div>
+
+                        <!-- Qidiruv: jarayon -->
+                        <div class="search-loading-card" id="search-loading-panel" style="display: none;">
+                            <div class="search-spinner"></div>
+                            <strong>Traktorchilar qidirilmoqda...</strong>
+                            <span class="loading-word">Loading...</span>
+                            <span class="search-loading-text" id="search-loading-text"></span>
+                            <div class="skeleton-list">
+                                <div class="skeleton-card"></div>
+                                <div class="skeleton-card"></div>
+                                <div class="skeleton-card"></div>
+                            </div>
+                        </div>
+
+                        <!-- Qidiruv: xatolik (try...catch) -->
+                        <div class="search-error-card" id="search-error-panel" style="display: none;">
+                            <div class="ms-icon">⚠️</div>
+                            <strong>Traktorchilarni yuklab bo'lmadi</strong>
+                            <span class="search-error-text" id="search-error-text"></span>
+                            <button class="btn btn-primary" id="btn-search-retry">🔄 Qayta urinib ko'rish</button>
+                        </div>
+
+                        <!-- Qidiruv: natijalar -->
+                        <div id="search-results-panel" style="display: none;">
+                            <div class="results-bar">
+                                <span id="drivers-found-count"></span>
+                                <button class="btn btn-secondary btn-sm" id="btn-research-drivers">🔄 Qayta qidirish</button>
+                            </div>
+
+                            <!-- Qidirish va filtrlar (API: ?q= &district= &service=) -->
+                            <div class="market-filters" id="market-filters">
+                                <div class="mf-search">
+                                    <span>🔎</span>
+                                    <input type="search" id="market-search" placeholder="Ism, traktor rusumi yoki davlat raqami..." autocomplete="off">
+                                </div>
+                                <select id="market-district" aria-label="Tuman bo'yicha filtr"></select>
+                                <select id="market-service" aria-label="Xizmat bo'yicha filtr"></select>
+                                <button type="button" class="btn btn-secondary btn-sm" id="market-filter-clear">✕ Tozalash</button>
+                            </div>
+                            <small class="api-trace" id="market-api-trace"></small>
+
+                            <!-- Dynamic Drivers Cards List -->
+                            <div class="drivers-cards-list" id="drivers-cards-container">
+                                <!-- Populated dynamically by script.js -->
+                            </div>
+
+                            <!-- Sahifalash (pagination) -->
+                            <div class="pager-wrap" id="market-pagination"></div>
+                        </div>
+                    </div>
+
+                </section>
+
+
+                <!-- ==============================================
+                     2. TRAKTORCHI (ISHCHI / DRIVER) SCREEN
+                     ============================================== -->
+                <section class="screen-view view-driver" id="screen-driver">
+                    
+                    <!-- Traktorchi profilini tanlash -->
+                    <div class="driver-switcher-card">
+                        <div class="driver-switcher-head">
+                            <strong>👥 Traktorchi profilini tanlang</strong>
+                            <small>Buyurtma faqat mijoz tanlagan traktorchining profiliga tushadi</small>
+                        </div>
+                        <div class="driver-switcher" id="driver-switcher"></div>
+                    </div>
+
+                    <!-- Driver Profile & Status HUD -->
+                    <div class="driver-profile-header">
+                        <div class="driver-profile-top">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face" alt="Rustam Qodirov" class="driver-lg-avatar" id="driver-profile-avatar">
+                            <div class="profile-text">
+                                <div class="driver-title-row">
+                                    <h2 id="driver-profile-name">Rustam Qodirov</h2>
+                                    <span class="rating-pill" id="driver-profile-rating">⭐ 4.9</span>
+                                </div>
+                                <p class="tractor-model" id="driver-profile-tractor">🚜 <strong>MTZ-82.1 Belarus</strong> • <span class="plate-badge">01 777 TAA</span></p>
+                                <p class="license-status" id="driver-profile-license">📋 O'zAgroinspeksiya: <strong class="text-green">FAOL (Seriya AG-2026-4412)</strong></p>
+                            </div>
+                        </div>
+
+                        <!-- Line Status Switch Button -->
+                        <div class="line-status-bar">
+                            <div class="line-status-label">
+                                <span class="status-indicator-dot" id="driver-status-dot"></span>
+                                <span id="driver-status-title">Liniyada emassiz (Dam olish)</span>
+                            </div>
+                            <button class="btn-line-toggle offline" id="btn-driver-line-toggle">
+                                <span class="icon">⚡</span>
+                                <span id="btn-line-text">Liniyaga Chiqish</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reyting statistikasi (mijozlar bahosi) -->
+                    <div class="rating-stats-card" id="driver-rating-stats"></div>
+
+                    <!-- Driver Custom Price & Amenities Settings Card -->
+                    <div class="driver-settings-card">
+                        <div class="settings-header">
+                            <h4>⚙️ Mening Xizmat Narxim va Qulayliklarim</h4>
+                            <span class="info-pill">Fermerlar shu ma'lumotni ko'radi</span>
+                        </div>
+                        <div class="settings-body">
+                            <div class="setting-item">
+                                <label><strong>Har bir xizmat uchun 1 sotix narxim (Majburiy):</strong></label>
+                                <div class="driver-prices-grid" id="driver-prices-grid">
+                                    <!-- Populated dynamically via script.js -->
+                                </div>
+                                <button class="btn btn-primary btn-sm" id="btn-save-driver-rate">💾 Narxlarni saqlash</button>
+                            </div>
+                            <div class="setting-item">
+                                <label><strong>Qo'shimcha Qulayliklarim (Ixtiyoriy):</strong></label>
+                                <div class="amenities-chips-row" id="driver-my-amenities">
+                                    <!-- Populated dynamically via script.js -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Incoming Order Card with Distance vs Land Size Feasibility Analysis! -->
+                    <div class="incoming-request-card" id="incoming-request-card" style="display: none;">
+                        <div class="incoming-banner">
+                            <div class="alert-icon">🔔</div>
+                            <div class="alert-title">
+                                <strong>YANGI BUYURTMA KELDI!</strong>
+                                <span>Fermer aynan sizni tanladi</span>
+                            </div>
+                            <div class="order-timer" id="incoming-timer">15s</div>
+                        </div>
+
+                        <div class="order-body-content">
+                            <!-- Service Type Badge -->
+                            <div class="incoming-service-banner">
+                                <span class="serv-label">🌾 Tanlangan Xizmat:</span>
+                                <strong class="serv-value" id="inc-order-service">Yer haydash</strong>
+                            </div>
+
+                            <!-- Land and Price Info -->
+                            <div class="order-highlight-grid">
+                                <div class="h-box">
+                                    <span class="h-label">Haydaladigan yer:</span>
+                                    <strong class="h-value" id="inc-order-size">15 Sotix</strong>
+                                </div>
+                                <div class="h-box">
+                                    <span class="h-label">Oraliq masofa:</span>
+                                    <strong class="h-value text-blue" id="inc-order-dist">1.8 km</strong>
+                                </div>
+                                <div class="h-box">
+                                    <span class="h-label">Jami hisoblangan pul:</span>
+                                    <strong class="h-value text-green" id="inc-order-price">375 000 so'm</strong>
+                                </div>
+                            </div>
+
+                            <!-- Customer info -->
+                            <div class="order-client-row">
+                                <span>👤 Buyurtmachi: <strong>Alisher B. (+998 90 333 22 11)</strong></span>
+                                <span>📍 Manzil: <strong id="inc-order-loc">Parkent tumani (Soyliq dalasi)</strong></span>
+                            </div>
+
+                            <!-- Economic Feasibility Recommendation Box (Crucial User Requirement!) -->
+                            <div class="economic-analysis-box" id="inc-economic-box">
+                                <div class="econ-icon" id="econ-icon">💡</div>
+                                <div class="econ-content">
+                                    <strong id="econ-title">Foydali buyurtma:</strong>
+                                    <p id="econ-desc">Oraliq masofa yaqin (1.8 km) va yer maydoni yetarli (15 sotix). Yoqilg'i xarajati to'liq qoplanadi va yaxshi daromad keltiradi!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action buttons: Accept or Decline -->
+                        <div class="incoming-actions-bar">
+                            <button class="btn btn-success btn-large flex-1" id="btn-driver-accept">
+                                ✅ Qabul Qilish
+                            </button>
+                            <button class="btn btn-outline-danger btn-large flex-1" id="btn-driver-decline">
+                                ❌ Bekor qilish (Masofa uzoq / Maydon kichik)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Active Job In-Progress HUD -->
+                    <div class="active-driver-hud" id="active-driver-hud" style="display: none;">
+                        <div class="active-hud-header">
+                            <span class="hud-stage-badge" id="driver-hud-stage-badge">1-BOSQICH: DALAGA YO'L OLISH</span>
+                            <h3 id="active-hud-client">Alisher Fermer Dalasi</h3>
+                            <p class="hud-sub">Xizmat: <strong class="text-primary" id="hud-job-service">Yer haydash</strong> | Maydon: <strong id="hud-job-size">15 Sotix</strong> | Tushum: <strong class="text-green" id="hud-job-fare">375 000 so'm</strong></p>
+                        </div>
+
+                        <div class="hud-eta-card">
+                            <span class="icon">🚜</span>
+                            <div>
+                                <span class="label">Dalagacha masofa va vaqt:</span>
+                                <strong class="value" id="driver-nav-eta">1.8 km (~6 daqiqa)</strong>
+                            </div>
+                        </div>
+
+                        <!-- Next Stage Step Button -->
+                        <button class="btn btn-primary btn-large btn-block" id="btn-driver-next-step">
+                            📍 Dalaga Yetib Keldim
+                        </button>
+                    </div>
+
+                    <!-- "PUL" & Moliya Bo'limi (Yandex Pro style for Tractor) -->
+                    <div class="driver-finance-card">
+                        <div class="finance-header">
+                            <h3>💰 "Pul" & Daromad Balansi</h3>
+                            <button class="btn btn-sm btn-success" id="btn-driver-withdraw">💳 Pul yechish</button>
+                        </div>
+
+                        <div class="metrics-row">
+                            <div class="metric-item bg-green">
+                                <span class="m-title">Bugungi Sof Daromad</span>
+                                <h3 class="m-val" id="fin-daily-income">712 500 so'm</h3>
+                                <small>5% komissiya ayirilgan</small>
+                            </div>
+                            <div class="metric-item">
+                                <span class="m-title">Hamyon Balansi</span>
+                                <h3 class="m-val text-primary" id="fin-wallet-balance">1 425 000 so'm</h3>
+                                <small>Uzcard / Humo ga tayyor</small>
+                            </div>
+                            <div class="metric-item">
+                                <span class="m-title">Haydalgan Maydon</span>
+                                <h3 class="m-val" id="fin-total-sotix">65 Sotix</h3>
+                                <small id="fin-jobs-today">Bugun 4 ta tomorqa/dala</small>
+                            </div>
+                        </div>
+
+                        <!-- History List -->
+                        <div class="job-history-box">
+                            <div class="history-head">
+                                <h4>📋 Oxirgi Bajarilgan Dala Ishlari <span class="history-count" id="driver-history-count"></span></h4>
+                                <button type="button" class="btn-eye" id="btn-toggle-driver-history" title="Tarixni yashirish" aria-pressed="false">
+                                    <span>Yashirish</span>
+                                </button>
+                            </div>
+                            <div class="history-items" id="driver-history-container">
+                                <!-- Populated dynamically via script.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+
+                <!-- ==============================================
+                     3. ADMIN (TEXNOPARK / NAZORAT) SCREEN
+                     ============================================== -->
+                <section class="screen-view view-admin" id="screen-admin">
+                    <div class="admin-dashboard-wrap">
+                        <div class="admin-header-row">
+                            <div>
+                                <h2>🏢 Texnopark & Traktorlar Nazorati</h2>
+                                <p class="desc">Barcha traktorchilar, ularning belgilagan sotix narxlari va litsenziyalari monitoringi</p>
+                            </div>
+                            <span class="badge-admin">Admin Boshqaruv</span>
+                        </div>
+
+                        <!-- Stats Row -->
+                        <div class="admin-stats-row">
+                            <div class="astat-card">
+                                <span class="a-icon">🚜</span>
+                                <div>
+                                    <span class="a-label">Ro'yxatdagi Traktorlar</span>
+                                    <h3 class="a-num" id="admin-tractors-count">6 ta</h3>
+                                </div>
+                            </div>
+                            <div class="astat-card">
+                                <span class="a-icon">🟢</span>
+                                <div>
+                                    <span class="a-label">Liniyada Faol</span>
+                                    <h3 class="a-num text-green" id="admin-online-count">4 ta</h3>
+                                </div>
+                            </div>
+                            <div class="astat-card">
+                                <span class="a-icon">🌾</span>
+                                <div>
+                                    <span class="a-label">Bugun Haydalgan Yer</span>
+                                    <h3 class="a-num" id="admin-today-sotix">180 Sotix</h3>
+                                </div>
+                            </div>
+                            <div class="astat-card">
+                                <span class="a-icon">💰</span>
+                                <div>
+                                    <span class="a-label">Park Komissiyasi (5%)</span>
+                                    <h3 class="a-num text-primary" id="admin-commission">225 000 so'm</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Qidiruv, yangi traktorchi qo'shish -->
+                        <div class="admin-toolbar">
+                            <div class="admin-search">
+                                <span>🔎</span>
+                                <input type="search" id="admin-search" placeholder="Ism, rusum, davlat raqami yoki telefon bo'yicha qidirish..." autocomplete="off">
+                            </div>
+                            <button type="button" class="btn btn-primary" id="btn-admin-add-driver">➕ Traktorchi qo'shish</button>
+                        </div>
+
+                        <!-- API sinov paneli: xatolik holatlarini ko'rish uchun -->
+                        <div class="api-lab">
+                            <strong>🧪 API sinov paneli</strong>
+                            <label>Server holati:
+                                <select id="api-mode">
+                                    <option value="normal">✅ Normal</option>
+                                    <option value="offline">📡 Tarmoq uzilgan (fetch xatosi)</option>
+                                    <option value="server_error">💥 Server xatosi (500)</option>
+                                </select>
+                            </label>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btn-api-reset">↺ Boshlang'ich ma'lumotlarni tiklash</button>
+                        </div>
+
+                        <!-- Drivers Fleet Management Table -->
+                        <div class="fleet-table-card">
+                            <div class="fleet-table-head">
+                                <h3>📋 Traktorchilar, 1 Sotix Narxlari va Qulayliklari</h3>
+                                <div class="fleet-service-filter">
+                                    <span>Narx ko'rsatilayotgan xizmat:</span>
+                                    <select id="admin-service-select"></select>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Traktorchi</th>
+                                            <th>Traktor Rusumi</th>
+                                            <th>Davlat Raqami</th>
+                                            <th id="admin-price-th">1 Sotix Narxi</th>
+                                            <th>Asosiy Qulayliklari</th>
+                                            <th>Litsenziya</th>
+                                            <th>Holati</th>
+                                            <th>Ish Tarixi</th>
+                                            <th>Amallar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-fleet-table">
+                                        <!-- Populated via script.js -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="admin-table-foot">
+                                <small class="api-trace" id="admin-api-trace"></small>
+                                <div class="pager-wrap" id="admin-pagination"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ==============================================
+                     4. SPLIT-SCREEN REJIMI (YONMA-YON SINOV)
+                     ============================================== -->
+                <section class="screen-view view-split" id="screen-split">
+                    <div class="split-info-banner">
+                        <span>⚡ <strong>Split-Screen Sinov Rejimi:</strong> Chapda Foydalanuvchi maydonni kiritadi va traktorchini tanlab buyurtma beradi; o'ngda Traktorchiga darhol signal bilan buyurtma tushadi va masofa/maydon tahlili ko'rinadi!</span>
+                    </div>
+                    <div class="split-dual-container">
+                        <div class="split-pane pane-left" id="split-user-pane">
+                            <div class="pane-header">
+                                <h3>👤 1. Foydalanuvchi (Mijoz)</h3>
+                                <span class="tag green">Traktor tanlash</span>
+                            </div>
+                            <div id="split-user-body"></div>
+                        </div>
+                        <div class="split-pane pane-right" id="split-driver-pane">
+                            <div class="pane-header">
+                                <h3>🚜 2. Traktorchi (Rustam Qodirov)</h3>
+                                <span class="tag gold">Buyurtma qabuli</span>
+                            </div>
+                            <div id="split-driver-body"></div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- Bottom Mobile Navigation Bar -->
+            <nav class="mobile-bottom-nav">
+                <button class="nav-item active" data-role="user" id="bnav-user">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Mijoz</span>
+                </button>
+                <button class="nav-item" data-role="driver" id="bnav-driver">
+                    <span class="nav-icon">🚜</span>
+                    <span class="nav-label">Traktorchi</span>
+                </button>
+                <button class="nav-item" data-role="admin" id="bnav-admin">
+                    <span class="nav-icon">🏢</span>
+                    <span class="nav-label">Texnopark</span>
+                </button>
+                <button class="nav-item" data-role="split" id="bnav-split">
+                    <span class="nav-icon">⚡</span>
+                    <span class="nav-label">Split</span>
+                </button>
+            </nav>
+
+        </div>
+    </div>
+
+    <!-- Modal: Pul Yechish (Withdraw) -->
+    <div class="modal-overlay" id="withdraw-modal" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3>💳 Pul Yechib Olish</h3>
+                <button class="btn-close-modal" id="btn-close-withdraw">✕</button>
+            </div>
+            <div class="modal-content">
+                <p>Karta raqamingizni kiriting va summani yechib oling.</p>
+                <div class="input-block">
+                    <label>Mavjud balans:</label>
+                    <h3 class="text-green" id="withdraw-available-balance">1 425 000 so'm</h3>
+                </div>
+                <div class="input-block">
+                    <label>Uzcard / Humo karta raqami:</label>
+                    <input type="text" id="withdraw-card-number" value="8600 1234 5678 9012" maxlength="19">
+                </div>
+                <div class="input-block">
+                    <label>Yechiladigan summa (so'm):</label>
+                    <input type="number" id="withdraw-amount-val" value="300000" step="50000">
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-secondary" id="btn-cancel-withdraw-modal">Bekor qilish</button>
+                <button class="btn btn-success" id="btn-confirm-withdraw-modal">Yechib Olish</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Modal: Traktorchi qo'shish / tahrirlash (POST / PUT) -->
+    <div class="modal-overlay" id="driver-modal" style="display: none;">
+        <div class="modal-box wide">
+            <div class="modal-head">
+                <h3 id="driver-modal-title">➕ Yangi traktorchi qo'shish</h3>
+                <button type="button" class="btn-close-modal" id="btn-close-driver-modal" aria-label="Yopish">✕</button>
+            </div>
+            <form id="driver-form" novalidate>
+                <div class="modal-content">
+                    <div class="form-banner" id="driver-form-banner" style="display: none;"></div>
+
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="df-name">Ism-familiya *</label>
+                            <input type="text" id="df-name" maxlength="60" placeholder="Masalan: Aziz Karimov" autocomplete="off">
+                            <small class="field-error" data-err="name"></small>
+                        </div>
+                        <div class="field">
+                            <label for="df-phone">Telefon *</label>
+                            <input type="tel" id="df-phone" placeholder="+998 90 123 45 67" autocomplete="off">
+                            <small class="field-error" data-err="phone"></small>
+                        </div>
+                        <div class="field">
+                            <label for="df-tractor">Traktor rusumi *</label>
+                            <input type="text" id="df-tractor" maxlength="50" placeholder="Masalan: MTZ-82.1 Belarus" autocomplete="off">
+                            <small class="field-error" data-err="tractorModel"></small>
+                        </div>
+                        <div class="field">
+                            <label for="df-plate">Davlat raqami *</label>
+                            <input type="text" id="df-plate" placeholder="01 777 TAA" autocomplete="off">
+                            <small class="field-error" data-err="plate"></small>
+                        </div>
+                        <div class="field">
+                            <label for="df-license">Litsenziya seriyasi</label>
+                            <input type="text" id="df-license" placeholder="AG-2026-1234 (bo'sh bo'lsa avtomatik)" autocomplete="off">
+                            <small class="field-error" data-err="licenseSeries"></small>
+                        </div>
+                        <div class="field">
+                            <label for="df-distance">Masofa (km) *</label>
+                            <input type="text" inputmode="decimal" id="df-distance" placeholder="Masalan: 2.5" autocomplete="off">
+                            <small class="field-error" data-err="distanceKm"></small>
+                        </div>
+                        <div class="field field-wide">
+                            <label for="df-avatar">Rasm manzili (ixtiyoriy)</label>
+                            <input type="url" id="df-avatar" placeholder="https://... (bo'sh bo'lsa ism bosh harflari qo'yiladi)" autocomplete="off">
+                            <small class="field-error" data-err="avatar"></small>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Xizmat ko'rsatadigan tumanlar *</label>
+                        <div class="district-checks" id="df-districts"></div>
+                        <small class="field-error" data-err="districts"></small>
+                    </div>
+
+                    <div class="field">
+                        <label>Har bir xizmat uchun 1 sotix narxi (so'm)</label>
+                        <small class="field-hint">Bajarmaydigan xizmat narxini bo'sh qoldiring. Kamida bittasi kerak.</small>
+                        <div class="price-form-grid" id="df-prices"></div>
+                        <small class="field-error" data-err="prices"></small>
+                    </div>
+
+                    <div class="field">
+                        <label for="df-amenities">Qulayliklari (har biri yangi qatordan, ixtiyoriy)</label>
+                        <textarea id="df-amenities" rows="3" placeholder="Chuqur haydash (35sm+)&#10;15 daqiqada boraman"></textarea>
+                        <small class="field-error" data-err="amenities"></small>
+                    </div>
+
+                    <label class="check-line">
+                        <input type="checkbox" id="df-recommended">
+                        <span>⭐ "Tavsiya etiladi" belgisi</span>
+                    </label>
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-driver-modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-success" id="btn-save-driver-form">💾 Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Boshlang'ich yuklash ekrani (API dan traktorchilar olinguncha) -->
+    <div class="app-boot" id="app-boot">
+        <div class="app-boot-box">
+            <div class="search-spinner" id="boot-spinner"></div>
+            <div class="boot-icon" id="boot-icon" style="display: none;">⚠️</div>
+            <strong id="boot-title">Loading...</strong>
+            <span id="boot-text">Traktorchilar ma'lumotlari serverdan yuklanmoqda</span>
+            <button type="button" class="btn btn-primary" id="btn-boot-retry" style="display: none;">🔄 Qayta urinish</button>
+        </div>
+    </div>
+
+    <!-- Xabarlar (toast) -->
+    <div class="toast-wrap" id="toast-wrap" aria-live="polite"></div>
+
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- REST API: boshlang'ich ma'lumotlar, mock server va API mijozi -->
+    <script src="data/drivers-seed.js"></script>
+    <script src="mock-api.js"></script>
+    <script src="api.js"></script>
+    <!-- App Logic Script -->
+    <script src="script.js"></script>
+</body>
+</html>
